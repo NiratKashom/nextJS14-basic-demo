@@ -1,5 +1,5 @@
+import { headers } from "next/headers";
 import Link from "next/link";
-type Props = {};
 
 interface User {
   id: number;
@@ -32,20 +32,25 @@ async function getUsers() {
   }
   return res.json();
 }
-
-export default async function Page({}: Props) {
+export default async function Page() {
+  const headerRequest = headers();
+  const user = JSON.parse(headerRequest.get("user") || "{}");
   const users: User[] = await getUsers();
   return (
     <div>
+      Manage User
+      <div>{user.email}</div>
+      <div>
       User List:
       {users.map((user, idx) => (
         <div key={idx}>
           {user.id} - {user.name}
-          <Link href={`/user/${user.id}`} className="ml-2 px-2 bg-blue-400">
-            User info
+          <Link href={`/manage/user/${user.id}`} className="ml-2 px-2 bg-blue-400">
+            edit user
           </Link>
         </div>
       ))}
+    </div>
     </div>
   );
 }
